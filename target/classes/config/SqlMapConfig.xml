@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+	    <typeAlias alias="HBoardDTO" type="com.board.harry.domain.HBoardDTO" />
+	    <typeAlias alias="HCommentDTO" type="com.board.harry.domain.HCommentDTO" />
+	    
+	    <typeAlias alias="ZBoardDTO" type="com.board.zzang.domain.ZBoardDTO" />
+	    <typeAlias alias="ZCommentDTO" type="com.board.zzang.domain.ZCommentDTO" />
+	    
+	    <typeAlias alias="MBoardDTO" type="com.board.marvel.domain.MBoardDTO" />
+	    <typeAlias alias="MCommentDTO" type="com.board.marvel.domain.MCommentDTO" />
+	    
+	    <typeAlias alias="GBoardDTO" type="com.board.ghibli.domain.GBoardDTO" />
+	    <typeAlias alias="GCommentDTO" type="com.board.ghibli.domain.GCommentDTO" />
+	    
+	    <typeAlias alias="RBoardDTO" type="com.board.ring.domain.RBoardDTO" />
+	    <typeAlias alias="RCommentDTO" type="com.board.ring.domain.RCommentDTO" />
+	    
+	    <typeAlias alias="NoticeDTO" type="com.board.notice.domain.NoticeDTO" />
+	    
+	    <typeAlias alias="AdminDTO" type="com.admin.domain.AdminDTO" />
+	    <typeAlias alias="MemberDTO" type="com.member.domain.MemberDTO" />
+	    <typeAlias alias="BoardDTO" type="com.board.domain.BoardDTO"/>
+	</typeAliases>
+	
+	<mappers>
+	    <mapper resource="com/board/harry/dao/HBoardMapper.xml" />
+	    <mapper resource="com/board/harry/dao/HCommentMapper.xml" />
+	    
+	    <mapper resource="com/board/zzang/dao/ZBoardMapper.xml" />
+	    <mapper resource="com/board/zzang/dao/ZCommentMapper.xml" />
+	    
+	    <mapper resource="com/board/marvel/dao/MBoardMapper.xml" />
+	    <mapper resource="com/board/marvel/dao/MCommentMapper.xml" />
+	    
+	    <mapper resource="com/board/ghibli/dao/GBoardMapper.xml" />
+	    <mapper resource="com/board/ghibli/dao/GCommentMapper.xml" />
+	    
+	    <mapper resource="com/board/ring/dao/RBoardMapper.xml" />
+	    <mapper resource="com/board/ring/dao/RCommentMapper.xml" />
+	    
+	    <mapper resource="com/board/notice/dao/NoticeMapper.xml" />
+	    
+	    <mapper resource="com/admin/dao/AdminMapper.xml" />
+	    <mapper resource="com/member/dao/MemberMapper.xml" />
+	    <mapper resource="com/board/dao/BoardMapper.xml" />
+	</mappers>
+</configuration>

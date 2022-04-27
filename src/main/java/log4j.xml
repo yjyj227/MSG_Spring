@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!-- 내부처리과정, 에러메시지를 출력할 때 출력 양식을 지정 -->
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%p:%C{1}.%M()] %m%n" />
+		</layout>
+	</appender>
+
+	<!-- 컨트롤러 뿐만 아니라 모든 클래스의 에러메시지, 디버깅을 알고 싶다
+		com.board 이하의 모든 로그객체 반영클래스에서 내부처리 확인 가능
+	 -->
+	<category name="com.board" additivity="false">
+		<priority value="debug" />
+		<appender-ref ref="STDOUT" />
+	</category>
+
+	<!-- 에러 발생했을 때 처리 -->
+	<root>
+		<priority value="error" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</log4j:configuration>

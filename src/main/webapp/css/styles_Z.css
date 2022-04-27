@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+table, .table, thead {/**/
+	border-color: rgb(255, 255, 255);
+	border-top: 2px solid rgb(255, 255, 255);
+	border-bottom: 2px solid rgb(255, 255, 255);
+}
+.table-hover>tbody>tr:hover {/**/
+	background-color: rgba(255, 255, 255, 0.2);
+}
+.pagination li a {/**/
+	border: 1.5px solid rgb(255, 255, 255);
+}
+.nav>li>a:hover, .nav>li>a:focus, .nav-tabs>li.active>a,
+.nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {/**/
+	background-color: rgb(255, 255, 255);
+}
+.btn {/**/
+	background-color: rgb(255, 255, 255);
+	color: #212529;
+}
+.form-control:focus {/**/
+	border-color: rgb(255, 255, 255);
+	box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+.pagetitle {
+	color:rgb(255, 255, 255);
+}

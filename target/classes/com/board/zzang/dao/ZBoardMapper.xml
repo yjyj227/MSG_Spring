@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="ZBoardDTO">
+
+<!-- 댓글 수 구하기 -->
+<select id="selectCommentCount_Z" parameterType="map" resultType="ZBoardDTO">
+	select * from z_comment where z_number=#{z_number} and z_cbody!='삭제된 댓글입니다.'
+</select>
+
+
+<!-- 1-1. 글목록 보기 -->
+<select id="selectList_Z" parameterType="map" resultType="ZBoardDTO">
+	select * 
+		from (select z_table.*, rownum rn
+			from (select * from z_table 
+				<where>
+					<if test="searchtext!=null and search=='z_title'">
+						z_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_body'">
+						z_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_nickname'">
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_all'">
+						z_title like '%' || #{searchtext} || '%' or
+						z_body like '%' || #{searchtext} || '%' or
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			order by z_number desc) z_table)
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 1-2. 글목록 보기 -->
+<select id="selectListZref_Z" parameterType="map" resultType="ZBoardDTO">
+	select * 
+		from (select z_table.*, rownum rn
+			from (select * from z_table 
+				<where>
+					<if test="searchtext!=null and search=='z_title'">
+						z_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_body'">
+						z_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_nickname'">
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_all'">
+						z_title like '%' || #{searchtext} || '%' or
+						z_body like '%' || #{searchtext} || '%' or
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			 order by z_number desc) z_table where z_ref=#{z_ref})
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 1-3. 글목록 보기 -->
+<select id="selectListHot_Z" parameterType="map" resultType="ZBoardDTO">
+	select * 
+		from (select z_table.*, rownum rn
+			from (select * from z_table 
+				<where>
+					<if test="searchtext!=null and search=='z_title'">
+						z_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_body'">
+						z_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_nickname'">
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='z_all'">
+						z_title like '%' || #{searchtext} || '%' or
+						z_body like '%' || #{searchtext} || '%' or
+						z_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			order by z_number desc) z_table where z_count > 50)
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 2-1. 검색어에 해당하는 총 레코드 수 구하기 -->
+<select id="selectCount_Z" parameterType="map" resultType="Integer">
+	select count(*) from z_table
+		<where>
+			<if test="searchtext!=null and search=='z_title'">
+				z_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_body'">
+				z_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_nickname'">
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				z_title like '%' || #{searchtext} || '%' or
+				z_body like '%' || #{searchtext} || '%' or
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+		</where>
+</select>
+
+<!-- 2-2. 검색어에 해당하는 총 레코드 수 구하기 z_ref -->
+<select id="selectCountZref_Z" parameterType="map" resultType="Integer">
+	select count(*) from z_table 
+		<where>
+			<if test="searchtext!=null and search=='z_title'">
+				z_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_body'">
+				z_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_nickname'">
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				z_title like '%' || #{searchtext} || '%' or
+				z_body like '%' || #{searchtext} || '%' or
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+			and z_ref=#{z_ref} 
+		</where>
+</select>
+
+<!-- 2-3. 검색어에 해당하는 총 레코드 수 구하기 hot -->
+<select id="selectCountHot_Z" parameterType="map" resultType="Integer">
+	select count(*) from z_table 
+		<where>
+			<if test="searchtext!=null and search=='z_title'">
+				z_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_body'">
+				z_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='z_nickname'">
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				z_title like '%' || #{searchtext} || '%' or
+				z_body like '%' || #{searchtext} || '%' or
+				z_nickname like '%' || #{searchtext} || '%'
+			</if>
+			 and z_count > 50
+		</where>
+</select>
+
+
+
+
+<!-- 최댓값 구하기 -->
+<select id="getNewNum_Z" resultType="int">
+	select max(z_number) from z_table
+</select>
+
+<!-- 글쓰기 -->
+<insert id="insertBoard_Z" parameterType="ZBoardDTO">
+	insert into z_table(z_number, mem_id, z_nickname, z_title, z_body, z_date, z_category, z_ref, z_filename)
+	values(#{z_number}, #{mem_id}, #{z_nickname}, #{z_title}, #{z_body}, sysdate, #{z_category}, #{z_ref}, #{z_filename,jdbcType=VARCHAR})
+</insert>
+
+<!-- 글쓰기 성공시 포인트 적립 -->
+<update id="pointupA_Z" parameterType="String">
+	update login set log_point=log_point+10 where mem_id=#{mem_id}
+</update>
+
+
+<select id="getPoint_Z" parameterType="String" resultType="int">
+	select log_point from login where mem_id=#{mem_id}
+</select>
+<select id="getGrade_Z" parameterType="String" resultType="int">
+	select log_grade from login where mem_id=#{mem_id}
+</select>
+
+
+<!-- 등급 변동 -->
+<update id="changeGrade1_Z" parameterType="String">
+	update login set log_grade=1 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade2_Z" parameterType="String">
+	update login set log_grade=2 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade3_Z" parameterType="String">
+	update login set log_grade=3 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade4_Z" parameterType="String">
+	update login set log_grade=4 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade5_Z" parameterType="String">
+	update login set log_grade=5 where mem_id=#{mem_id}
+</update>
+
+<!-- 4. 조회수 증가 -->
+<update id="updateHit_Z" parameterType="Integer">
+	update z_table set z_count=z_count+1 where z_number=#{z_number}
+</update>
+
+<!-- 5. 글 상세보기 -->
+<select id="selectBoard_Z" parameterType="Integer" resultType="ZBoardDTO">
+	select * from z_table where z_number=#{z_number}
+</select>
+
+<!-- 6. 글 수정하기 -->
+<update id="updateBoard_Z" parameterType="ZBoardDTO">
+	update z_table set z_title=#{z_title}, z_body=#{z_body}, 
+	z_category=#{z_category}, z_ref=#{z_ref}, z_filename=#{z_filename:VARCHAR} where z_number=#{z_number}
+</update>
+
+<!-- 7. 글 삭제하기 -->
+<delete id="deleteBoard_Z" parameterType="Integer">
+	delete from z_table where z_number=#{z_number}
+</delete>
+
+<!-- 글 삭제시 포인트 회수 -->
+<update id="pointdownA_Z" parameterType="String">
+	update login set log_point=log_point-10 where mem_id=#{mem_id}
+</update>
+
+<!-- 글 삭제시 해당 글의 댓글 삭제 -->
+<delete id="deleteBoardComment_Z" parameterType="Integer">
+	delete from z_comment where z_number=#{z_number}
+</delete>
+
+<!-- 글 삭제시 스크랩 삭제 -->
+<delete id="deleteBoardScrap_Z" parameterType="ZBoardDTO">
+	delete from scrap where s_number=#{z_number} and s_title=#{z_title}
+</delete>
+
+
+
+</mapper>

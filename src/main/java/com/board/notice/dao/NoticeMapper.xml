@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="NoticeDTO">
+
+
+
+
+
+<!-- 1-1. 글목록 보기 -->
+<select id="selectList_N" parameterType="map" resultType="NoticeDTO">
+	select * 
+		from (select notice.*, rownum rn
+			from (select * from notice 
+				<where>
+					<if test="searchtext!=null and search=='n_title'">
+						not_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='n_body'">
+						not_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="searchtext!=null and search=='n_all'">
+						not_title like '%' || #{searchtext} || '%' or
+						not_body like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			order by notice_number desc) notice)
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+
+
+<!-- 2-1. 검색어에 해당하는 총 레코드 수 구하기 -->
+<select id="selectCount_N" parameterType="map" resultType="Integer">
+	select count(*) from notice
+		<where>
+			<if test="searchtext!=null and search=='n_title'">
+				not_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='n_body'">
+				not_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='n_all'">
+				not_title like '%' || #{searchtext} || '%' or
+				not_body like '%' || #{searchtext} || '%'
+			</if>
+		</where>
+</select>
+
+
+<!-- 최댓값 구하기 -->
+<select id="getNewNum_N" resultType="int">
+	select max(notice_number) from notice
+</select>
+
+<!-- 글쓰기 -->
+<insert id="insertBoard_N" parameterType="NoticeDTO">
+	insert into notice(notice_number, admin_id, not_title, not_body, not_date, not_filename)
+	values(#{notice_number}, #{admin_id}, #{not_title}, #{not_body}, sysdate, #{not_filename,jdbcType=VARCHAR})
+</insert>
+
+<!-- 4. 조회수 증가 -->
+<update id="updateHit_N" parameterType="Integer">
+	update notice set not_count=not_count+1 where notice_number=#{notice_number}
+</update>
+
+<!-- 5. 글 상세보기 -->
+<select id="selectBoard_N" parameterType="Integer" resultType="NoticeDTO">
+	select * from notice where notice_number=#{notice_number}
+</select>
+
+<!-- 6. 글 수정하기 -->
+<update id="updateBoard_N" parameterType="NoticeDTO">
+	update notice set not_title=#{not_title}, not_body=#{not_body}, 
+	not_filename=#{not_filename:VARCHAR} where notice_number=#{notice_number}
+</update>
+
+<!-- 7. 글 삭제하기 -->
+<delete id="deleteBoard_N" parameterType="Integer">
+	delete from notice where notice_number=#{notice_number}
+</delete>
+
+
+</mapper>

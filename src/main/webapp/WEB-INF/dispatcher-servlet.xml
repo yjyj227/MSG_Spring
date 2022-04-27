@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       
+<!-- @Autowired 사용을 위해 -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com" />
+    
+    
+    
+    <bean id="viewResolver"
+	  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+				  value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+    
+    <!--리소스 번들 설정=>웹상에 공통으로 출력할 문자열이나 에러메시지를 등록해서 필요할 때 출력시켜주는 파일
+    
+    	리소스번들을 이용해서 처리(~.properties) 글쓰기
+    	1.jdbc.properties(DB) 2.공통 문자열 메세지를 파일로 등록->불러와서 출력
+	    3.유효성 검사를 위한 에러메세지를 파일로 등록->불러와서 출력
+	    messages.label->패키지명.불러올파일명.properties(확장자가 생략됨)
+	    messages.validation->messages패키지에 있는 validattion.properties파일
+   
+   		리소스번들파일을 불러오는 환경설정
+        리소스번들파일 ->웹상에서 필요로하는 문자열이나 유효성검사에 관련된 부분을 불러올 수 있도록
+                     파일
+          messages(패키지명).label(불러올 파일명)~.properties이 생략                   
+     -->
+    <bean id="messageSource" 
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+	        <list>
+	            <value>messages.label</value>
+	            <value>messages.validation</value>
+	        </list>
+        </property>
+        <!-- <property name="defaultEncoding" value="utf-8" /> -->
+    </bean>
+    
+    <!-- 
+    	예외페이지 작성했을 때 처리해주는 빈즈클래스 등록
+    	SimpleMappingExceptionResolver->웹상에서 에러 발생->개발자가 작성한 예외처리페이지를 출력시켜줌
+    	<props>
+    		<prop key="java.lang.Exception(발생한 예외처리클래스명)">예외처리페이지명</prop>
+    	</props>
+     -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    	<property name="exceptionMappings">
+    		<props>
+    			<prop key="java.lang.Exception">Error</prop>
+    		</props>
+    	</property>
+    </bean>
+    
+    <!-- 파일 다운로드뷰를 위한 전용 viewResolver를 빈즈로 등록 -->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"
+    	  p:order="0" />
+    
+    
+    
+    <!-- 파일 업로드 52428800->byte단위 50MB->51,200kb->52428800byte
+    	maxUploadSioze(최대 업로드 크기)
+     -->
+    <bean id="multipartResolver"
+    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="52428800" />
+    	<property name="defaultEncoding" value="utf-8" />
+    </bean>
+ 
+</beans>

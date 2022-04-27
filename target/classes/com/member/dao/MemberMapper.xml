@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="MemberDTO">
+
+<!-- 1-1. 회원 로그인 select -->
+<select id="loginCheck" parameterType="MemberDTO" resultType="boolean">
+	select count(*) from login
+		<where>
+			mem_id=#{mem_id} and log_passwd=#{log_passwd}
+		</where>
+</select>
+
+<!-- 1-2. 닉네임, 포인트, 등급 세션처리 select -->
+<select id="getNPG" parameterType="String" resultType="MemberDTO">
+	select log_nickname, log_point, log_grade from login where mem_id=#{mem_id}
+</select>
+
+<!-- 2. id 중복체크 select -->
+<select id="checkId" parameterType="String" resultType="Integer">
+	select count(*) from member where mem_id=#{mem_id}
+</select>
+
+<!-- 3. 닉네임 중복체크 select -->
+<select id="checkNickname" parameterType="String" resultType="Integer">
+	select count(*) from member where mem_nickname=#{mem_nickname}
+</select>
+
+<!-- 4. 회원가입 insert, insert -->
+<insert id="memberInsert" parameterType="MemberDTO">
+	insert into member 
+	values(#{mem_id}, #{mem_passwd}, #{mem_name}, #{mem_nickname}, #{mem_birth}, #{mem_tel}, #{mem_email}, #{mem_addr}, #{mem_genre}, #{mem_point}, #{mem_grade})
+</insert>
+
+<insert id="loginInsert" parameterType="MemberDTO">
+	insert into login(mem_id, log_passwd, log_nickname, log_point, log_grade) 
+	values(#{mem_id}, #{mem_passwd}, #{mem_nickname}, #{mem_point}, #{mem_grade})
+</insert>
+
+<!-- 5. 포인트, 등급 동기화 select, update -->
+<select id="selectPG" parameterType="String" resultType="MemberDTO">
+	select mem_id, log_point, log_grade from login where mem_id=#{mem_id}
+</select>
+
+<update id="syncPG" parameterType="MemberDTO">
+	update member set mem_point=#{log_point}, mem_grade=#{log_grade} where mem_id=#{mem_id}
+</update>
+
+<!-- 6. 회원수정->특정 회원 찾기 select  getMember -->
+<select id="getMember" parameterType="String" resultType="MemberDTO">
+	select * from member where mem_id=#{mem_id}
+</select>
+
+<!-- 7. 찾은 회원을 수정->회원가입 메서드와 동일 update, update -->
+<update id="memberUpdate" parameterType="MemberDTO">
+	update member set 
+	mem_passwd=#{mem_passwd}, mem_name=#{mem_name}, mem_birth=#{mem_birth}, mem_tel=#{mem_tel}, 
+	mem_email=#{mem_email}, mem_addr=#{mem_addr}, mem_genre=#{mem_genre}, 
+	mem_nickname=#{mem_nickname}, mem_point=#{mem_point}, mem_grade=#{mem_grade}
+	where mem_id=#{mem_id}
+</update>
+
+<update id="loginUpdate" parameterType="MemberDTO">
+	update login set log_passwd=#{mem_passwd} where mem_id=#{mem_id}
+</update>
+
+<!-- 8. 회원탈퇴 select, delete -->
+
+<!-- beforeQuit -->
+<update id="deleteH" parameterType="String">
+	update h_table set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+<update id="deleteHC" parameterType="String">
+	update h_comment set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+
+<update id="deleteZ" parameterType="String">
+	update z_table set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+<update id="deleteZC" parameterType="String">
+	update z_comment set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+
+<update id="deleteM" parameterType="String">
+	update m_table set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+<update id="deleteMC" parameterType="String">
+	update m_comment set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+
+<update id="deleteG" parameterType="String">
+	update g_table set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+<update id="deleteGC" parameterType="String">
+	update g_comment set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+
+<update id="deleteR" parameterType="String">
+	update r_table set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+<update id="deleteRC" parameterType="String">
+	update r_comment set mem_id='dropped' where mem_id=#{mem_id}
+</update>
+
+<!-- 스크랩, 별점에서는 삭제 -->
+<delete id="deleteS" parameterType="String">
+	delete from scrap where mem_id=#{mem_id}
+</delete>
+
+<delete id="deleteStar" parameterType="String">
+	delete from star where mem_id=#{mem_id}
+</delete>
+
+
+<select id="matchPw" parameterType="String" resultType="String">
+	select log_passwd from login where mem_id=#{mem_id}
+</select>
+
+<delete id="quit" parameterType="String">
+	delete from login where mem_id=#{mem_id}
+</delete>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="HBoardDTO">
+
+<!-- 댓글 수 구하기 -->
+<select id="selectCommentCount_H" parameterType="map" resultType="HBoardDTO">
+	select * from h_comment where h_number=#{h_number} and h_cbody!='삭제된 댓글입니다.'
+</select>
+
+
+<!-- 1-1. 글목록 보기 -->
+<select id="selectList_H" parameterType="map" resultType="HBoardDTO">
+	select * 
+		from (select h_table.*, rownum rn
+			from (select * from h_table 
+				<where>
+					<if test="search=='h_title' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_body' and searchtext!=null">
+						h_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_nickname' and searchtext!=null">
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_all' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%' or
+						h_body like '%' || #{searchtext} || '%' or
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			order by h_number desc) h_table)
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 1-2. 글목록 보기 -->
+<select id="selectListHref_H" parameterType="map" resultType="HBoardDTO">
+	select * 
+		from (select h_table.*, rownum rn
+			from (select * from h_table 
+				<where>
+					<if test="search=='h_title' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_body' and searchtext!=null">
+						h_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_nickname' and searchtext!=null">
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_all' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%' or
+						h_body like '%' || #{searchtext} || '%' or
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			 order by h_number desc) h_table where h_ref=#{h_ref})
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 1-3. 글목록 보기 -->
+<select id="selectListHot_H" parameterType="map" resultType="HBoardDTO">
+	select * 
+		from (select h_table.*, rownum rn
+			from (select * from h_table 
+				<where>
+					<if test="search=='h_title' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_body' and searchtext!=null">
+						h_body like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_nickname' and searchtext!=null">
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+					<if test="search=='h_all' and searchtext!=null">
+						h_title like '%' || #{searchtext} || '%' or
+						h_body like '%' || #{searchtext} || '%' or
+						h_nickname like '%' || #{searchtext} || '%'
+					</if>
+				</where>
+			order by h_number desc) h_table where h_count > 50)
+			
+	<![CDATA[
+	where rn >=#{start} AND rn <=#{end}
+	]]>
+</select>
+
+<!-- 2-1. 검색어에 해당하는 총 레코드 수 구하기 -->
+<select id="selectCount_H" parameterType="map" resultType="Integer">
+	select count(*) from h_table
+		<where>
+			<if test="searchtext!=null and search=='h_title'">
+				h_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_body'">
+				h_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_nickname'">
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				h_title like '%' || #{searchtext} || '%' or
+				h_body like '%' || #{searchtext} || '%' or
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+		</where>
+</select>
+
+<!-- 2-2. 검색어에 해당하는 총 레코드 수 구하기 h_ref -->
+<select id="selectCountHref_H" parameterType="map" resultType="Integer">
+	select count(*) from h_table 
+		<where>
+			<if test="searchtext!=null and search=='h_title'">
+				h_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_body'">
+				h_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_nickname'">
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				h_title like '%' || #{searchtext} || '%' or
+				h_body like '%' || #{searchtext} || '%' or
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+			and h_ref=#{h_ref} 
+		</where>
+</select>
+
+<!-- 2-3. 검색어에 해당하는 총 레코드 수 구하기 hot -->
+<select id="selectCountHot_H" parameterType="map" resultType="Integer">
+	select count(*) from h_table 
+		<where>
+			<if test="searchtext!=null and search=='h_title'">
+				h_title like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_body'">
+				h_body like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='h_nickname'">
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+			<if test="searchtext!=null and search=='all'">
+				h_title like '%' || #{searchtext} || '%' or
+				h_body like '%' || #{searchtext} || '%' or
+				h_nickname like '%' || #{searchtext} || '%'
+			</if>
+			 and h_count > 50
+		</where>
+</select>
+
+
+
+
+<!-- 최댓값 구하기 -->
+<select id="getNewNum_H" resultType="int">
+	select max(h_number) from h_table
+</select>
+
+<!-- 글쓰기 -->
+<insert id="insertBoard_H" parameterType="HBoardDTO">
+	insert into h_table(h_number, mem_id, h_nickname, h_title, h_body, h_date, h_category, h_ref, h_filename)
+	values(#{h_number}, #{mem_id}, #{h_nickname}, #{h_title}, #{h_body}, sysdate, #{h_category}, #{h_ref}, #{h_filename,jdbcType=VARCHAR})
+</insert>
+
+<!-- 글쓰기 성공시 포인트 적립 -->
+<update id="pointupA_H" parameterType="String">
+	update login set log_point=log_point+10 where mem_id=#{mem_id}
+</update>
+
+
+<select id="getPoint_H" parameterType="String" resultType="int">
+	select log_point from login where mem_id=#{mem_id}
+</select>
+<select id="getGrade_H" parameterType="String" resultType="int">
+	select log_grade from login where mem_id=#{mem_id}
+</select>
+
+
+<!-- 등급 변동 -->
+<update id="changeGrade1_H" parameterType="String">
+	update login set log_grade=1 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade2_H" parameterType="String">
+	update login set log_grade=2 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade3_H" parameterType="String">
+	update login set log_grade=3 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade4_H" parameterType="String">
+	update login set log_grade=4 where mem_id=#{mem_id}
+</update>
+<update id="changeGrade5_H" parameterType="String">
+	update login set log_grade=5 where mem_id=#{mem_id}
+</update>
+
+<!-- 4. 조회수 증가 -->
+<update id="updateHit_H" parameterType="Integer">
+	update h_table set h_count=h_count+1 where h_number=#{h_number}
+</update>
+
+<!-- 5. 글 상세보기 -->
+<select id="selectBoard_H" parameterType="Integer" resultType="HBoardDTO">
+	select * from h_table where h_number=#{h_number}
+</select>
+
+<!-- 6. 글 수정하기 -->
+<update id="updateBoard_H" parameterType="HBoardDTO">
+	update h_table set h_title=#{h_title}, h_body=#{h_body}, 
+	h_category=#{h_category}, h_ref=#{h_ref}, h_filename=#{h_filename:VARCHAR} where h_number=#{h_number}
+</update>
+
+<!-- 7. 글 삭제하기 -->
+<delete id="deleteBoard_H" parameterType="Integer">
+	delete from h_table where h_number=#{h_number}
+</delete>
+
+<!-- 글 삭제시 포인트 회수 -->
+<update id="pointdownA_H" parameterType="String">
+	update login set log_point=log_point-10 where mem_id=#{mem_id}
+</update>
+
+<!-- 글 삭제시 해당 글의 댓글 삭제 -->
+<delete id="deleteBoardComment_H" parameterType="Integer">
+	delete from h_comment where h_number=#{h_number}
+</delete>
+
+<!-- 글 삭제시 스크랩 삭제 -->
+<delete id="deleteBoardScrap_H" parameterType="HBoardDTO">
+	delete from scrap where s_number=#{h_number} and s_title=#{h_title}
+</delete>
+
+
+
+</mapper>

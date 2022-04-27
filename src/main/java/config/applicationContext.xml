@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<!-- jdbc.properties파일을 메모리에 올려주는 역할을 하는 클래스 빈즈로 등록
+		setLocations("classpath:config/jdbc.properties") -->
+    <bean id="propertyConfigurer" 
+              class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+    
+    <!-- 커넥션 풀을 이용한 DataSource 설정 -->
+	<bean id="dataSource"
+       class="org.apache.commons.dbcp.BasicDataSource">
+	    <property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<!-- 최대 커넥션 개수 -->
+		<property name="maxActive" value="50"></property>
+		<!-- 접속이 없을 경우 최대 유지 커넥션 개수 -->
+		<property name="maxIdle" value="30"></property>
+		<!-- 접속이 없을 경우 최소 유지 커넥션 개수 -->
+		<property name="minIdle" value="50"></property>
+		<!-- 최대 대기시간(초) : 초과시 연결실패 오류 발생 -->
+		<property name="maxWait" value="5"></property>
+	</bean>
+
+	<!-- Mybatis설정이 필요(SqlSessionFactoryBean)  -->
+	<!-- 3.(Mybatis) bean등록(SqlSessionFactoryBean)
+	        1)configLocation->테이블에 대한 xml 파일을 불러올때 
+	        2)dataSource->DB연결정보 멤버변수
+	-->
+	
+	<bean id="sqlSessionFactory" 
+	           class="org.mybatis.spring.SqlSessionFactoryBean">
+	     <property name="configLocation" value="classpath:config/SqlMapConfig.xml" />
+	     <property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 4 SqlSessionTemplate(sqlSession객체를 더 쉽게 얻어오기 위해서 설정 -->
+	<bean id="sqlSessionTemplate" 
+	           class="org.mybatis.spring.SqlSessionTemplate">
+	         <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+</beans>

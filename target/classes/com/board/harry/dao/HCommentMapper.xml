@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="HCommentDTO">
+
+<!-- 1. 댓글 조회 getComment() -->
+<select id="getComment_H" parameterType="Integer" resultType="HCommentDTO">
+	select * from h_comment where h_number=#{h_number} order by h_cref asc, h_cre_step asc, h_cdate asc
+</select>
+
+
+
+<!-- 2. 댓글 수 getCommentCount() -->
+<select id="getCommentCount_H" parameterType="Integer" resultType="Integer">
+	select count(*) from h_comment 
+	<![CDATA[
+	where h_number=#{h_number} and h_cbody!='삭제된 댓글입니다.&nbsp;'
+	]]>
+</select>
+
+
+<!-- 3-0-1. 최댓값 구하기 -->
+<select id="getNewCommentNum_H" resultType="int">
+	select max(h_cnumber) from h_comment
+</select>
+
+
+<!-- 3-0-2. step값 설정 위한 구문 -->
+<select id="getSuperStep_H" parameterType="Integer" resultType="int">
+	select max(h_cre_step) from h_comment where h_cref=#{h_cref}
+</select>
+
+
+<!-- 3-1. 댓글 작성 -->
+<insert id="insertComment_H" parameterType="HCommentDTO">
+	insert into h_comment(h_cnumber, mem_id, h_number, h_cbody, h_cnickname, h_cdate, h_cref, h_cre_step, h_cre_level) 
+	values(#{h_cnumber}, #{mem_id}, #{h_number}, #{h_cbody}, #{h_cnickname}, sysdate, #{h_cref}, #{h_cre_step}, #{h_cre_level})
+</insert>
+
+
+
+<!-- 3-2. 댓글 작성 성공시 포인트 적립 -->
+<update id="pointupC_H" parameterType="String">
+	update login set log_point=log_point+5 where mem_id=#{mem_id}
+</update>
+
+
+
+<!-- 4-1. 댓글 삭제   글수정 비슷하게 생각해야 할듯 -->
+<select id="lowerComment_H" parameterType="HCommentDTO" resultType="int">
+	select count(*) from h_comment where h_cref=#{h_cref} and h_cre_level > #{h_cre_level}
+</select>
+
+<update id="upDeleteComment_H" parameterType="Integer">
+	update h_comment set 
+	<![CDATA[
+	h_cnickname=' ', h_cbody='삭제된 댓글입니다.&nbsp;' 
+	]]>
+	where h_cnumber=#{h_cnumber}
+</update>
+
+<delete id="deleteComment_H" parameterType="Integer">
+	delete from h_comment where h_cnumber=#{h_cnumber}
+</delete>
+
+
+<!-- 4-2. 댓글 삭제 성공시 포인트 회수 -->
+<update id="pointdownC_H" parameterType="String">
+	update login set log_point=log_point-5 where mem_id=#{mem_id}
+</update>
+
+
+
+<!-- 5. 댓글 수정    가능하다면 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="BoardDTO">
+
+
+<!-- getMyArticleCount -->
+<select id="getMyArticleCountH" parameterType="map" resultType="Integer">
+	select count(*) from h_table where mem_id=#{mem_id}
+</select>
+
+<select id="getMyArticleCountZ" parameterType="map" resultType="Integer">
+	select count(*) from z_table where mem_id=#{mem_id}
+</select>
+
+<select id="getMyArticleCountM" parameterType="map" resultType="Integer">
+	select count(*) from m_table where mem_id=#{mem_id}
+</select>
+
+<select id="getMyArticleCountG" parameterType="map" resultType="Integer">
+	select count(*) from g_table where mem_id=#{mem_id}
+</select>
+
+<select id="getMyArticleCountR" parameterType="map" resultType="Integer">
+	select count(*) from r_table where mem_id=#{mem_id}
+</select>
+
+
+<!-- getMyArticles -->
+<select id="getMyArticlesH" parameterType="map" resultType="HBoardDTO">
+	select * 
+		from (select h_table.*, rownum rn 
+				from (select * from h_table where mem_id=#{mem_id}
+		  		order by h_number desc) h_table)
+		  
+	<![CDATA[
+	where rn >= #{start} and rn <= #{end}
+	]]>
+</select>
+
+<select id="getMyArticlesZ" parameterType="map" resultType="ZBoardDTO">
+	select * 
+		from (select z_table.*, rownum rn 
+				from (select * from z_table where mem_id=#{mem_id}
+		  		order by z_number desc) z_table)
+		  
+	<![CDATA[
+	where rn >= #{start} and rn <= #{end}
+	]]>
+</select>
+
+<select id="getMyArticlesM" parameterType="map" resultType="MBoardDTO">
+	select * 
+		from (select m_table.*, rownum rn 
+				from (select * from m_table where mem_id=#{mem_id}
+		  		order by m_number desc) m_table)
+		  
+	<![CDATA[
+	where rn >= #{start} and rn <= #{end}
+	]]>
+</select>
+
+<select id="getMyArticlesG" parameterType="map" resultType="GBoardDTO">
+	select * 
+		from (select g_table.*, rownum rn 
+				from (select * from g_table where mem_id=#{mem_id}
+		  		order by g_number desc) g_table)
+		  
+	<![CDATA[
+	where rn >= #{start} and rn <= #{end}
+	]]>
+</select>
+
+<select id="getMyArticlesR" parameterType="map" resultType="RBoardDTO">
+	select * 
+		from (select r_table.*, rownum rn 
+				from (select * from r_table where mem_id=#{mem_id}
+		  		order by r_number desc) r_table)
+		  
+	<![CDATA[
+	where rn >= #{start} and rn <= #{end}
+	]]>
+</select>
+
+
+
+<!-- getNewScrapNum select -->
+<select id="getNewScrapNum" resultType="Integer">
+	select max(scrap_number) from scrap
+</select>
+
+<!-- scrap insert -->
+<insert id="scrap" parameterType="BoardDTO">
+	insert into 
+	scrap(scrap_number, mem_id, s_number, s_category, s_title, s_date, s_url, s_nickname)
+	values(#{scrap_number}, #{mem_id}, #{s_number}, #{s_category}, #{s_title}, sysdate, #{s_url}, #{s_nickname})
+</insert>
+
+<!-- scrapUp update -->
+<update id="scrapUp" parameterType="BoardDTO">
+	update ${init}_table set ${init}_scrap=${init}_scrap+1 
+	where ${init}_number=#{s_number}
+</update>
+
+<!-- getScrapArticleCount -->
+<select id="getScrapArticleCount" parameterType="String" resultType="Integer">
+	select count(*) from scrap where mem_id=#{mem_id}
+</select>
+
+<!-- getScrapArticles -->
+<select id="getScrapArticles" parameterType="map" resultType="BoardDTO">
+	select * from 
+		(select scrap.*, rownum as rn from 
+			(select * from scrap where mem_id=#{mem_id} order by scrap_number desc) scrap) 
+	<![CDATA[
+	where rn >=#{start} and rn <=#{end}
+	]]>
+</select>
+
+<!-- deleteScrapArticle -->
+<delete id="deleteScrapArticle" parameterType="Integer">
+	delete from scrap where scrap_number=#{scrap_number}
+</delete>
+
+<!-- scrapDown -->
+<update id="scrapDown" parameterType="BoardDTO">
+	update ${init}_table set ${init}_scrap=${init}_scrap-1 
+	where ${init}_number=#{s_number}
+</update>
+
+
+
+<!-- avgStar -->
+<select id="avgStar" parameterType="Integer" resultType="Double">
+	select round(avg(v_star), 2) from star where v_movie=#{v_movie}
+</select>
+
+
+<!-- countLikes -->
+<select id="countLikes" parameterType="Integer" resultType="Integer">
+	select sum(v_like) from star where v_movie=#{v_movie}
+</select>
+
+
+<!-- getMyRate -->
+<select id="getMyRate" parameterType="map" resultType="BoardDTO">
+	select * from star where mem_id=#{mem_id} and v_movie=#{v_movie}
+</select>
+
+
+<!-- rate -->
+<select id="findRate" parameterType="map" resultType="Integer">
+	select count(*) from star where mem_id=#{mem_id} and v_movie=#{v_movie}
+</select>
+
+<update id="updateRate" parameterType="BoardDTO">
+	update star set v_star=#{v_star}, v_like=#{v_like} where mem_id=#{mem_id} and v_movie=#{v_movie}
+</update>
+
+
+<select id="getMaxNum" resultType="Integer">
+	select max(v_number) from star
+</select>
+
+<insert id="insertRate" parameterType="BoardDTO">
+	insert into star(v_number, mem_id, v_movie, v_star, v_like)
+	values(#{v_number}, #{mem_id}, #{v_movie}, #{v_star}, #{v_like})
+</insert>
+
+
+
+</mapper>

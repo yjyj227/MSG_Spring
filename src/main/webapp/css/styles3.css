@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+table, .table, thead {/**/
+	border-color: rgb(212, 99, 61);
+	border-top: 2px solid rgb(212, 99, 61);
+	border-bottom: 2px solid rgb(212, 99, 61);
+}
+.table-hover>tbody>tr:hover {/**/
+	background-color: rgba(212, 99, 61, 0.2);
+}
+.pagination li a {/**/
+	border: 1.5px solid rgb(212, 99, 61);
+}
+.nav>li>a:hover, .nav>li>a:focus, .nav-tabs>li.active>a,
+.nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus,
+.btn {/**/
+	background-color: rgb(212, 99, 61);
+}
+.form-control:focus {/**/
+	border-color: rgb(212, 99, 61);
+	box-shadow: 0 0 0 0.25rem rgba(212, 99, 61, 0.25);
+}
+.pagetitle {
+	color:rgb(212, 99, 61);
+}
+.logform {
+	border-top:2px solid rgb(212, 99, 61);
+	border-bottom:2px solid rgb(212, 99, 61);
+}
