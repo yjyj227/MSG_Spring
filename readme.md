@@ -1,5 +1,5 @@
-# MSG : Movie So Good
-## [개인 프로젝트]
+# [개인 프로젝트] MSG : Movie So Good
+
 ## Spring Framework MVC 2로 구현한 영화 커뮤니티 사이트
 
 
